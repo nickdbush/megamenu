@@ -20,7 +20,7 @@ function transformItem(item: NavItemResponse): NavItem {
 }
 
 let _nextItemKey = 0;
-function nextItemKey(): number {
+export function nextItemKey(): number {
   return _nextItemKey++;
 }
 
@@ -66,8 +66,8 @@ export async function load(): Promise<Site> {
         key: nextItemKey(),
         title: "News",
         children: [
-          { key: nextItemKey(), title: "Example", children: [] },
-          { key: nextItemKey(), title: "Example", children: [] },
+          { key: nextItemKey(), title: "Example 1", children: [] },
+          { key: nextItemKey(), title: "Example 2", children: [] },
         ],
       },
     ],

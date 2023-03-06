@@ -1,38 +1,46 @@
-import { useCallback, useEffect, useRef, useState } from "preact/hooks";
-import { NavItem, Message, Site, load } from "./state";
+import { signal, useSignalEffect, useSignal } from "@preact/signals";
+import { NavItem, Message, Site, load, nextItemKey } from "./state";
 
-let nextKey = 0;
+type State =
+  | {
+      loading: true;
+    }
+  | {
+      loading: false;
+      site: Site;
+    };
+
+const state = signal<State>({ loading: true });
+
+load().then((site) => {
+  state.value = { loading: false, site };
+});
+
+const updatePreview = (iframe: HTMLIFrameElement, site: Site) => {
+  if (iframe.contentWindow == null) {
+    return;
+  }
+  const message: Message = { type: "update", site };
+  iframe.contentWindow.postMessage(message);
+};
 
 export function Editor() {
-  const [state, setState] = useState<Site | "loading">("loading");
-  const preview = useRef<HTMLIFrameElement>(null);
+  const preview = useSignal<HTMLIFrameElement | null>(null);
 
-  useEffect(() => {
-    load().then((site) => {
-      setState(site);
-    });
-  }, []);
+  useSignalEffect(() => {
+    // When the state changes, update the iframe (if it exists)
+    const _preview = preview.peek();
+    if (state.value.loading || _preview == null) return;
+    updatePreview(_preview, state.value.site);
+  });
 
-  const updatePreview = () => {
-    if (state == "loading") {
-      throw new Error("Preview update requested when in loading state");
-    }
-    if (preview.current?.contentWindow == null) {
-      return;
-    }
-    const message: Message = { type: "update", site: state };
-    preview.current.contentWindow.postMessage(message);
-  };
-
-  useEffect(() => {
-    if (state == "loading") return;
-    updatePreview();
-  }, [state]);
-
-  useEffect(() => {
+  useSignalEffect(() => {
+    // When the iframe changes, update with state (if it has loaded)
     const handleUpdate = ({ data }: MessageEvent<Message>) => {
-      if (data.type == "refresh" && state != "loading") {
-        updatePreview();
+      const _state = state.peek();
+      if (preview.value == null || _state.loading) return;
+      if (data.type == "refresh") {
+        updatePreview(preview.value!, _state.site);
       }
     };
 
@@ -40,30 +48,38 @@ export function Editor() {
     return () => {
       window.removeEventListener("message", handleUpdate);
     };
-  }, [state]);
+  });
 
-  const setSite = (cb: (site: Site) => Site) => {
-    setState((state) => {
-      if (state == "loading") return state;
-      return cb(state);
-    });
+  const setSite = (site: Site) => {
+    state.value = {
+      loading: false,
+      site,
+    };
   };
 
-  if (state == "loading") {
+  if (state.value.loading) {
     return <div>Loading...</div>;
   }
 
+  const { site } = state.value;
+
   return (
     <div>
-      <iframe style={{ width: "100%", height: "500px" }} src="/preview.html" ref={preview} />
+      <iframe
+        style={{ width: "100%", height: "500px" }}
+        src="/preview.html"
+        ref={(ref) => {
+          preview.value = ref;
+        }}
+      />
       <div>
-        {state.nav.map(({ key, title }) => {
+        {site.nav.map(({ key, title }) => {
           return (
             <div key={key}>
               <input
                 value={title}
                 onInput={(e) => {
-                  setSite((site) => ({
+                  setSite({
                     ...site,
                     nav: site.nav.map((item) => {
                       if (item.key == key) {
@@ -72,12 +88,12 @@ export function Editor() {
                         return item;
                       }
                     }),
-                  }));
+                  });
                 }}
               />
               <button
                 onClick={() => {
-                  setSite((site) => ({ ...site, nav: site.nav.filter((item) => item.key != key) }));
+                  setSite({ ...site, nav: site.nav.filter((item) => item.key != key) });
                 }}
               >
                 X
@@ -89,10 +105,10 @@ export function Editor() {
         <div>
           <button
             onClick={() => {
-              setSite((site) => ({
+              setSite({
                 ...site,
                 nav: [...site.nav, makeItem("Unset")],
-              }));
+              });
             }}
           >
             New +
@@ -105,7 +121,7 @@ export function Editor() {
 
 function makeItem(title: string, children: NavItem[] = []): NavItem {
   return {
-    key: nextKey++,
+    key: nextItemKey(),
     title,
     children,
   };
