@@ -1,32 +1,36 @@
-import { useEffect, useState } from "preact/hooks";
 import { Message, Site } from "./state";
 import { MenuItem } from "./menu-item";
+import { signal } from "@preact/signals";
+
+type State =
+  | {
+      loading: true;
+    }
+  | {
+      loading: false;
+      site: Site;
+    };
+
+const state = signal<State>({ loading: true });
+
+window.addEventListener("message", ({ data }: MessageEvent<Message>) => {
+  if (data.type == "update") {
+    state.value = {
+      loading: false,
+      site: data.site,
+    };
+  }
+});
+
+const refreshMessage: Message = { type: "refresh" };
+window.parent.postMessage(refreshMessage);
 
 export function Preview() {
-  const [site, setSite] = useState<Site | "loading">("loading");
-
-  useEffect(() => {
-    const handleUpdate = ({ data }: MessageEvent<Message>) => {
-      if (data.type == "update") {
-        setSite(data.site);
-      }
-    };
-
-    window.addEventListener("message", handleUpdate);
-
-    const refreshMessage: Message = { type: "refresh" };
-    window.parent.postMessage(refreshMessage);
-
-    return () => {
-      window.removeEventListener("message", handleUpdate);
-    };
-  }, []);
-
-  if (site == "loading") {
+  if (state.value.loading) {
     return <div>Loading...</div>;
   }
 
-  const { name, nav } = site;
+  const { site } = state.value;
 
   return (
     <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas>
@@ -92,7 +96,7 @@ export function Preview() {
         <div class="masthead-hero">
           <div class="masthead-title">
             <span class="h1">
-              <a href="/">{name}</a>
+              <a href="/">{site.name}</a>
             </span>
             <span class="h2">
               <a href="https://www.ed.ac.uk/information-services">Menu Playground</a>
@@ -118,7 +122,7 @@ export function Preview() {
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav me-auto ps-lg-0 flex-wrap">
-                {nav.map((item) => (
+                {site.nav.map((item) => (
                   <MenuItem key={item.key} item={item} />
                 ))}
               </ul>
