@@ -1,5 +1,6 @@
 import { Message, Site } from "./state";
 import { MenuItem } from "./menu-item";
+import { Link } from "./link";
 import { signal } from "@preact/signals";
 
 type State =
@@ -38,23 +39,25 @@ export function Preview() {
         <div class="container-masthead">
           <div class="row">
             <div class="col-md-7 col-lg-8" style="padding-right: 45px">
-              <a href="https://www.ed.ac.uk">
+              <Link href="https://www.ed.ac.uk">
                 <img
                   class="masthead-logo"
                   src="https://www-test.uwp.is.ed.ac.uk/jo/wpp_megamenu_prototype/images/logo.png"
                   alt="The University of Edinburgh"
                 />
-              </a>
+              </Link>
             </div>
 
             <div class="col-md-5 col-lg-4">
               <div class="masthead-text">
                 <ul class="list-inline">
                   <li class="list-inline-item">
-                    <a href="https://www.ed.ac.uk/schools-departments">Schools &amp; departments</a>
+                    <Link href="https://www.ed.ac.uk/schools-departments">
+                      Schools &amp; departments
+                    </Link>
                   </li>
                   <li class="list-inline-item">
-                    <a href="https://www.myed.ed.ac.uk/">MyEd</a>
+                    <Link href="https://www.myed.ed.ac.uk/">MyEd</Link>
                   </li>
                 </ul>
               </div>
@@ -93,19 +96,19 @@ export function Preview() {
             <div class="beta-banner">
               <div class="badge bg-brand">BETA</div>
               <div>This is a new service – your feedback will help us to improve it.</div>
-              <a href="https://edinburgh.onlinesurveys.ac.uk/website-and-communications-website-feedback">
+              <Link href="https://edinburgh.onlinesurveys.ac.uk/website-and-communications-website-feedback">
                 Take the survey
-              </a>
+              </Link>
             </div>
           </div>
         </div>
         <div class="masthead-hero">
           <div class="masthead-title">
             <span class="h1">
-              <a href="/">{site.name}</a>
+              <Link href="/">{site.name}</Link>
             </span>
             <span class="h2">
-              <a href="https://www.ed.ac.uk/information-services">Menu Playground</a>
+              <Link href="https://www.ed.ac.uk/information-services">Menu Playground</Link>
             </span>
           </div>
         </div>

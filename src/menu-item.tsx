@@ -1,17 +1,17 @@
+import { Link } from "./link";
 import { NavItem } from "./state";
 
 export function MenuItem({ item }: { item: NavItem }) {
   return (
     <li class="nav-item dropdown position-static">
-      <a
+      <Link
         class="nav-link dropdown-toggle px-3 level-1 text-dark"
-        href="#"
         role="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
         {item.title}
-      </a>
+      </Link>
       {item.children.length > 0 && <Dropdown parent={item} />}
     </li>
   );
@@ -25,9 +25,9 @@ function Dropdown({ parent }: { parent: NavItem }) {
           <div class="col">
             <ul>
               <li>
-                <a class="dropdown-item text-wrap text-brand overview-link" href="#">
+                <Link class="dropdown-item text-wrap text-brand overview-link">
                   {parent.title} overview<i class="bi-chevron-right" aria-hidden="true"></i>
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -37,10 +37,10 @@ function Dropdown({ parent }: { parent: NavItem }) {
             <div key={item.key} class="col mb-lg-5 menu-col px-0">
               <ul>
                 <li>
-                  <a class="dropdown-item text-wrap text-brand level-2" href="#">
+                  <Link class="dropdown-item text-wrap text-brand level-2">
                     {item.title}
                     <i class="bi-chevron-right" aria-hidden="true"></i>
-                  </a>
+                  </Link>
                   {item.children.length > 0 && <Submenu parent={item} />}
                 </li>
               </ul>
@@ -57,9 +57,7 @@ function Submenu({ parent }: { parent: NavItem }) {
     <ul>
       {parent.children.map((item) => (
         <li>
-          <a class="dropdown-item text-wrap level-3 text-dark" href="#">
-            {item.title}
-          </a>
+          <Link class="dropdown-item text-wrap level-3 text-dark">{item.title}</Link>
         </li>
       ))}
     </ul>
