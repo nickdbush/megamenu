@@ -59,7 +59,13 @@ export function Preview() {
                 </ul>
               </div>
               <div role="search" class="masthead-search">
-                <form action="https://search.ed.ac.uk/" method="get">
+                <form
+                  action="https://search.ed.ac.uk/"
+                  method="get"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                  }}
+                >
                   <div class="input-group input-group-lg">
                     <input
                       type="search"
