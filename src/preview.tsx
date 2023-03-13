@@ -94,11 +94,10 @@ export function Preview() {
         <div class="container-fluid beta-container">
           <div class="container">
             <div class="beta-banner">
-              <div class="badge bg-brand">BETA</div>
-              <div>This is a new service – your feedback will help us to improve it.</div>
-              <Link href="https://edinburgh.onlinesurveys.ac.uk/website-and-communications-website-feedback">
-                Take the survey
-              </Link>
+              <div class="badge bg-brand">PREVIEW</div>
+              <div>
+                Use this tool to experiment with menu titles. This will not change your real site.
+              </div>
             </div>
           </div>
         </div>
