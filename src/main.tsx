@@ -1,5 +1,5 @@
 import { render } from "preact";
-import { App } from "./app";
+import { Editor } from "./editor";
 import "./index.css";
 
-render(<App />, document.getElementById("app") as HTMLElement);
+render(<Editor />, document.getElementById("app") as HTMLElement);
