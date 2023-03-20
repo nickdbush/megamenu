@@ -1,0 +1,18 @@
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  margin: 0;
+}
+
+iframe {
+  border: none;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.controls {
+  padding: 24px;
+}
+
+.char-count {
+  margin-left: 8px;
+}

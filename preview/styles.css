@@ -263,7 +263,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 2rem;
+  /* padding: 10px 2rem; */
+  padding: 10px 0;
 }
 
 .paragraph--type--layout .layout .col {

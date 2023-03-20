@@ -72,7 +72,7 @@ export function Editor() {
           preview.value = ref;
         }}
       />
-      <div>
+      <div class="controls">
         {site.nav.map(({ id, title }) => {
           return (
             <div key={id}>
@@ -98,7 +98,7 @@ export function Editor() {
               >
                 X
               </button>
-              <span>{title.length} characters</span>
+              <span class="char-count">{title.length}</span>
             </div>
           );
         })}
