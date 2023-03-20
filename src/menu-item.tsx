@@ -9,6 +9,7 @@ export function MenuItem({ item }: { item: NavItem }) {
         role="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
+        title={linkTitle(item)}
       >
         {item.title}
       </Link>
@@ -25,7 +26,10 @@ function Dropdown({ parent }: { parent: NavItem }) {
           <div class="col">
             <ul>
               <li>
-                <Link class="dropdown-item text-wrap text-brand overview-link">
+                <Link
+                  class="dropdown-item text-wrap text-brand overview-link"
+                  title={linkTitle(parent)}
+                >
                   {parent.title} overview<i class="bi-chevron-right" aria-hidden="true"></i>
                 </Link>
               </li>
@@ -34,10 +38,10 @@ function Dropdown({ parent }: { parent: NavItem }) {
         </div>
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 my-md-2 menu-section">
           {parent.children.map((item) => (
-            <div key={item.key} class="col mb-lg-5 menu-col px-0">
+            <div key={item.id} class="col mb-lg-5 menu-col px-0">
               <ul>
                 <li>
-                  <Link class="dropdown-item text-wrap text-brand level-2">
+                  <Link class="dropdown-item text-wrap text-brand level-2" title={linkTitle(item)}>
                     {item.title}
                     <i class="bi-chevron-right" aria-hidden="true"></i>
                   </Link>
@@ -57,9 +61,18 @@ function Submenu({ parent }: { parent: NavItem }) {
     <ul>
       {parent.children.map((item) => (
         <li>
-          <Link class="dropdown-item text-wrap level-3 text-dark">{item.title}</Link>
+          <Link class="dropdown-item text-wrap level-3 text-dark" title={linkTitle(item)}>
+            {item.title}
+          </Link>
         </li>
       ))}
     </ul>
   );
+}
+
+function linkTitle(item: NavItem): string | undefined {
+  if (item.id >= 0) {
+    return `#${item.id}`;
+  }
+  return undefined;
 }

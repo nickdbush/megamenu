@@ -1,5 +1,5 @@
 import { signal, useSignalEffect, useSignal } from "@preact/signals";
-import { NavItem, Message, Site, load, nextItemKey } from "./state";
+import { NavItem, Message, Site, load, nextItemId } from "./state";
 
 type State =
   | {
@@ -73,16 +73,16 @@ export function Editor() {
         }}
       />
       <div>
-        {site.nav.map(({ key, title }) => {
+        {site.nav.map(({ id, title }) => {
           return (
-            <div key={key}>
+            <div key={id}>
               <input
                 value={title}
                 onInput={(e) => {
                   setSite({
                     ...site,
                     nav: site.nav.map((item) => {
-                      if (item.key == key) {
+                      if (item.id == id) {
                         return { ...item, title: e.currentTarget.value };
                       } else {
                         return item;
@@ -93,7 +93,7 @@ export function Editor() {
               />
               <button
                 onClick={() => {
-                  setSite({ ...site, nav: site.nav.filter((item) => item.key != key) });
+                  setSite({ ...site, nav: site.nav.filter((item) => item.id != id) });
                 }}
               >
                 X
@@ -121,7 +121,7 @@ export function Editor() {
 
 function makeItem(title: string, children: NavItem[] = []): NavItem {
   return {
-    key: nextItemKey(),
+    id: nextItemId(),
     title,
     children,
   };

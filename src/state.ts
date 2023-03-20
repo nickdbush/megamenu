@@ -1,27 +1,9 @@
 export type Site = { name: string; nav: NavItem[] };
-export type NavItem = { key: any; title: string; children: NavItem[] };
+export type NavItem = { id: number; title: string; children: NavItem[] };
 
-type SiteResponse = { name: string; root: string; nav: NavItemResponse[] };
-type NavItemResponse = { title: string; children: NavItemResponse[] };
-
-function transformSite(site: SiteResponse): Site {
-  return {
-    name: site.name,
-    nav: site.nav.map(transformItem),
-  };
-}
-
-function transformItem(item: NavItemResponse): NavItem {
-  return {
-    key: nextItemKey(),
-    title: item.title,
-    children: item.children.map(transformItem),
-  };
-}
-
-let _nextItemKey = 0;
-export function nextItemKey(): number {
-  return _nextItemKey++;
+let _nextItemKey = -1;
+export function nextItemId(): number {
+  return _nextItemKey--;
 }
 
 async function loadState(): Promise<Site | null> {
@@ -47,8 +29,8 @@ async function loadState(): Promise<Site | null> {
     console.error(`Site for key ${siteKey} not found`);
     return null;
   }
-  const rawSite: SiteResponse = await response.json();
-  return transformSite(rawSite);
+  const site: Site = await response.json();
+  return site;
 }
 
 export async function load(): Promise<Site> {
@@ -60,14 +42,14 @@ export async function load(): Promise<Site> {
   return {
     name: "Example site",
     nav: [
-      { key: nextItemKey(), title: "Home", children: [] },
-      { key: nextItemKey(), title: "Contact", children: [] },
+      { id: nextItemId(), title: "Home", children: [] },
+      { id: nextItemId(), title: "Contact", children: [] },
       {
-        key: nextItemKey(),
+        id: nextItemId(),
         title: "News",
         children: [
-          { key: nextItemKey(), title: "Example 1", children: [] },
-          { key: nextItemKey(), title: "Example 2", children: [] },
+          { id: nextItemId(), title: "Example 1", children: [] },
+          { id: nextItemId(), title: "Example 2", children: [] },
         ],
       },
     ],

@@ -131,7 +131,7 @@ export function Preview() {
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav me-auto ps-lg-0 flex-wrap">
                 {site.nav.map((item) => (
-                  <MenuItem key={item.key} item={item} />
+                  <MenuItem key={item.id} item={item} />
                 ))}
               </ul>
             </div>
