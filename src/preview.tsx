@@ -106,9 +106,11 @@ export function Preview() {
             <span class="h1">
               <Link href="/">{site.name}</Link>
             </span>
-            <span class="h2">
-              <Link href="https://www.ed.ac.uk/information-services">Menu Playground</Link>
-            </span>
+            {site.parent != null && (
+              <span class="h2">
+                <Link href="#">{site.parent}</Link>
+              </span>
+            )}
           </div>
         </div>
       </header>

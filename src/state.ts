@@ -1,4 +1,4 @@
-export type Site = { name: string; nav: NavItem[] };
+export type Site = { name: string; parent: string | null; nav: NavItem[] };
 export type NavItem = { id: number; title: string; children: NavItem[] };
 
 let _nextItemKey = -1;
@@ -9,20 +9,8 @@ export function nextItemId(): number {
 async function loadState(): Promise<Site | null> {
   const searchKey = "site";
   const qs = new URLSearchParams(window.location.search);
-  const siteKeyRaw = qs.get(searchKey);
-  if (siteKeyRaw == null) return null;
-
-  let siteKey: number;
-  try {
-    siteKey = parseInt(siteKeyRaw);
-  } catch (err) {
-    console.error(`Site key "${siteKeyRaw}" could not be parsed`);
-    return null;
-  }
-  if (siteKey < 0 || siteKey > 167) {
-    console.error(`Site key ${siteKey} out of bounds`);
-    return null;
-  }
+  const siteKey = qs.get(searchKey);
+  if (siteKey == null) return null;
 
   const response = await fetch(`/sitemaps/sitemap-${siteKey}.json`);
   if (response.status == 404) {
@@ -41,6 +29,7 @@ export async function load(): Promise<Site> {
 
   return {
     name: "Example site",
+    parent: "Menu playground",
     nav: [
       { id: nextItemId(), title: "Home", children: [] },
       { id: nextItemId(), title: "Contact", children: [] },
